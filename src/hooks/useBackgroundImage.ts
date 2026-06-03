@@ -12,7 +12,8 @@ const useBackgroundImage = (): { imageUrl: string; photoLink: string } => {
   });
 
   useEffect(() => {
-    const dayOfWeek = (new Date().getDay() - 1) % 7;
+    const day = new Date().getDay();
+    const dayOfWeek = (day + 6) % 7;
     const backgroundData = BACKGROUND_IMAGES[dayOfWeek];
 
     if (backgroundData) {

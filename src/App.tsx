@@ -48,20 +48,36 @@ const App: React.FC = () => {
 
   const dayProgress = ((time.getHours() * 60 + time.getMinutes()) / 1440) * 100;
 
+  const [bgLoaded, setBgLoaded] = useState(false);
+
+  useEffect(() => {
+    // reset loaded flag when image changes
+    setBgLoaded(false);
+  }, [imageUrl]);
+
   return (
     <div className="app" style={{ backgroundImage: `url(${imageUrl})` }}>
+      {imageUrl && (
+        <img
+          src={imageUrl}
+          alt=""
+          aria-hidden="true"
+          className={bgLoaded ? 'bg-image loaded' : 'bg-image'}
+          onLoad={() => setBgLoaded(true)}
+        />
+      )}
       <Weather />
 
       <div className="hero">
         <div className="date-container">
-          <strong><h3>
+          <h3>
             {time.toLocaleDateString('en-GB', {
               weekday: 'long',
               day: 'numeric',
               month: 'long',
               year: 'numeric',
             })}
-          </h3></strong>
+          </h3>
           <h1>
             {time.toLocaleTimeString('en-GB', {
               hour: '2-digit',
