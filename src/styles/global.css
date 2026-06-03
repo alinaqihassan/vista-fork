@@ -1,12 +1,12 @@
 :root {
-  --font-family-primary: 'Inter', sans-serif;
+  --font-family-primary: 'Iosevka', monospace;
   --font-family-hero: 'DM Serif Display', serif;
   --primary-color: #f6f4db;
 }
 
 @font-face {
-  font-family: 'Inter';
-  src: url('/fonts/Inter.ttf') format('truetype');
+  font-family: 'Iosevka';
+  src: url('/fonts/Iosevka-Regular.ttf') format('truetype');
 }
 
 @font-face {
@@ -85,7 +85,7 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 2rem;
+  gap: 1rem;
   margin-bottom: 4rem;
 }
 
@@ -93,8 +93,8 @@ body {
   text-align: center;
 }
 
-.date-container p {
-  font-size: 1.2rem;
+.date-container h3 {
+  font-size: 1.8rem;
 }
 
 .date-container h1 {
@@ -125,7 +125,7 @@ body {
   padding: 0.2rem;
   display: flex;
   justify-content: space-between;
-  font-size: 0.8rem;
+  font-size: 1rem;
 }
 
 .footer a {
