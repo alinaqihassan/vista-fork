@@ -1,33 +1,43 @@
 import { useEffect, useState } from 'react';
 import { BACKGROUND_IMAGES } from '@/constants/backgrounds';
-import { BackgroundImageData } from '@/types/types';
 
 const useBackgroundImage = (): { imageUrl: string; photoLink: string } => {
   const [background, setBackground] = useState<{
     imageUrl: string;
     photoLink: string;
-  }>({
-    imageUrl: '',
-    photoLink: '',
+  }>(() => {
+    // Initialize with cached image to prevent flash
+    const cached = localStorage.getItem('backgroundImage');
+    return cached ? JSON.parse(cached) : { imageUrl: '', photoLink: '' };
   });
 
   useEffect(() => {
-    const dayOfWeek = (new Date().getDay() - 1) % 7; // Get the current day of the week (0-6, Monday-Sunday)
+    const dayOfWeek = (new Date().getDay() - 1) % 7;
+    const backgroundData = BACKGROUND_IMAGES[dayOfWeek];
 
-    // Find the background image data corresponding to the current day
-    const backgroundData: BackgroundImageData | undefined =
-      BACKGROUND_IMAGES.find(({ day }) => day === dayOfWeek);
-
-    // If background data exists, set the background image and the link
     if (backgroundData) {
-      setBackground({
-        imageUrl: `/images/${backgroundData.image}`,
-        photoLink: backgroundData.link,
-      });
+      const imageUrl = `/images/${backgroundData.image}`;
+      
+      const img = new Image();
+      img.onload = () => {
+        const newBackground = {
+          imageUrl,
+          photoLink: backgroundData.link,
+        };
+        setBackground(newBackground);
+        localStorage.setItem('backgroundImage', JSON.stringify(newBackground));
+      };
+      img.onerror = () => {
+        setBackground({
+          imageUrl,
+          photoLink: backgroundData.link,
+        });
+      };
+      img.src = imageUrl;
     }
   }, []);
 
-  return background; // Return the background image info
+  return background;
 };
 
 export default useBackgroundImage;

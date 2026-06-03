@@ -8,14 +8,45 @@ const App: React.FC = () => {
   const { imageUrl, photoLink } = useBackgroundImage(); // Fetch dynamic background
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setTime(new Date());
-    }, 1000);
+    // Update immediately when component mounts
+    setTime(new Date());
 
-    return () => clearInterval(interval); // Cleanup on unmount
+    // Calculate milliseconds until the next minute boundary
+    const calculateDelayToNextMinute = () => {
+      const now = new Date();
+      const secondsUntilNextMinute = 60 - now.getSeconds();
+      const millisecondsUntilNextMinute =
+        secondsUntilNextMinute * 1000 - now.getMilliseconds();
+      return millisecondsUntilNextMinute;
+    };
+
+
+    let timeoutId: ReturnType<typeof setTimeout>;
+    let intervalId: ReturnType<typeof setInterval>;
+
+    const scheduleNextUpdate = () => {
+      const delay = calculateDelayToNextMinute();
+      
+      // Schedule the first update to align with the next minute
+      timeoutId = setTimeout(() => {
+        setTime(new Date());
+        
+        // After the first aligned update, set up interval for every 60 seconds
+        intervalId = setInterval(() => {
+          setTime(new Date());
+        }, 60000); // 60 seconds
+      }, delay);
+    };
+
+    scheduleNextUpdate();
+
+    return () => {
+      clearTimeout(timeoutId);
+      clearInterval(intervalId);
+    };
   }, []);
 
-  const dayProgress = ((time.getHours() * 60 + time.getMinutes()) / 1440) * 100; // Calculate day progress %
+  const dayProgress = ((time.getHours() * 60 + time.getMinutes()) / 1440) * 100;
 
   return (
     <div className="app" style={{ backgroundImage: `url(${imageUrl})` }}>
